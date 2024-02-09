@@ -10,17 +10,12 @@ The REST API to the example app is described below.
 
 ### Request
 
-`GET /thing/`
+`GET /api/refresh-token`
 
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/
+    curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer [your refresh token]" http://localhost:8080/api/refresh-token
 
 ### Response
 
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:30 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 2
-
-    []
+    {
+        
+    }
