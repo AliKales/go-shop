@@ -95,7 +95,7 @@ func AddItemToCartHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Item added to your cart!"})
 }
 
-func DeleteItemFromCartHandler(c *gin.Context) {
+func DecreaseItemCountFromCartHandler(c *gin.Context) {
 	user := middlewares.ConvertToUser(c)
 
 	itemId := c.Query("item")
@@ -120,7 +120,33 @@ func DeleteItemFromCartHandler(c *gin.Context) {
 	`
 	database.DB.Exec(sqlStatement, itemId, itemId, "{"+itemId+"}", itemId, itemId, itemId, itemId, user.Id)
 
-	c.JSON(http.StatusOK, gin.H{"message": "Item added to your cart!"})
+	c.JSON(http.StatusOK, gin.H{"message": "Item decreased!"})
+}
+
+func DeleteItemFromCartHandler(c *gin.Context) {
+	user := middlewares.ConvertToUser(c)
+
+	itemId := c.Query("item")
+
+	if !utils.IsOnlyNumbers(itemId) {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Only numbers allowed!"})
+		return
+	}
+
+	sqlStatement := `
+	UPDATE users
+	SET cart = 
+		CASE 
+			WHEN cart->? IS NOT NULL THEN 
+				cart - ?
+			ELSE 
+				cart
+		END
+	WHERE id = ?;
+	`
+	database.DB.Exec(sqlStatement, itemId, itemId, user.Id)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Item deleted from your cart!"})
 }
 
 func GetCartHandler(c *gin.Context) {

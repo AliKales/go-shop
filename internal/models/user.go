@@ -20,5 +20,5 @@ type User struct {
 	UserAction           string    `gorm:"type:text"`
 	UserActionExpireAt   time.Time `gorm:"not null"`
 	StoreId              *int
-	Cart                 pgtype.JSONB
+	Cart                 *pgtype.JSONB
 }

@@ -3,7 +3,6 @@ package routes
 import (
 	"example/web-service-gin/internal/handlers"
 	"example/web-service-gin/internal/middlewares"
-	"example/web-service-gin/internal/tests"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -36,9 +35,6 @@ func SetupRouter() *gin.Engine {
 	r.GET("/api/cart", middlewares.UserAuthMiddleware, handlers.GetCartHandler)
 	r.GET("/api/add-to-cart", middlewares.UserAuthMiddleware, handlers.AddItemToCartHandler)
 	r.GET("/api/delete-from-cart", middlewares.UserAuthMiddleware, handlers.DeleteItemFromCartHandler)
-
-	//Tests
-	r.POST("/api/sendEmail", tests.TestEmailSend)
 
 	return r
 }
