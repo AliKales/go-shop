@@ -13,28 +13,34 @@ func SetupRouter() *gin.Engine {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}
-	config.AllowMethods = []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"}
+	config.AllowMethods = []string{"GET", "POST"}
 	config.AllowHeaders = []string{"Content-Type", "Authorization"}
 
 	r.Use(cors.New(config))
 
 	// POSTS
-	r.POST("/api/signup", handlers.SignupHandler)
-	r.POST("/api/login", handlers.LoginHandler)
-	r.POST("/api/delete-account", handlers.RequestDeleteAccountHandler)
-	r.POST("/api/create-store", middlewares.CreateStoreMiddleware, middlewares.UserAuthMiddleware, handlers.CreateStoreHandler)
-	r.POST("/api/create-store-item", middlewares.UserAuthMiddleware, handlers.CreateStoreItemHandler)
-	r.POST("/api/change-password", handlers.ChangePasswordHandler)
+	apiPost := r.Group("/api")
+	{
+		apiPost.POST("/signup", handlers.SignupHandler)
+		apiPost.POST("/login", handlers.LoginHandler)
+		apiPost.POST("/delete-account", handlers.RequestDeleteAccountHandler)
+		apiPost.POST("/create-store", middlewares.CreateStoreMiddleware, middlewares.UserAuthMiddleware, handlers.CreateStoreHandler)
+		apiPost.POST("/create-store-item", middlewares.UserAuthMiddleware, handlers.CreateStoreItemHandler)
+		apiPost.POST("/change-password", handlers.ChangePasswordHandler)
+	}
 
 	// GETS
-	r.GET("/api/refresh-token", handlers.RefreshTokenHandler)
-	r.GET("/api/user-action", handlers.RedirectUserAction)
-	r.GET("/api/forget-password", handlers.ForgetPasswordHandler)
-	r.GET("/api/user/:username", handlers.GetUserPublicHandler)
-	r.GET("/api/store/:storeLinkName", handlers.GetStorePublicHandler)
-	r.GET("/api/cart", middlewares.UserAuthMiddleware, handlers.GetCartHandler)
-	r.GET("/api/add-to-cart", middlewares.UserAuthMiddleware, handlers.AddItemToCartHandler)
-	r.GET("/api/delete-from-cart", middlewares.UserAuthMiddleware, handlers.DeleteItemFromCartHandler)
+	apiGet := r.Group("/api")
+	{
+		apiGet.GET("/refresh-token", handlers.RefreshTokenHandler)
+		apiGet.GET("/user-action", handlers.RedirectUserAction)
+		apiGet.GET("/forget-password", handlers.ForgetPasswordHandler)
+		apiGet.GET("/user/:username", handlers.GetUserPublicHandler)
+		apiGet.GET("/store/:storeLinkName", handlers.GetStorePublicHandler)
+		apiGet.GET("/cart", middlewares.UserAuthMiddleware, handlers.GetCartHandler)
+		apiGet.GET("/add-to-cart", middlewares.UserAuthMiddleware, handlers.AddItemToCartHandler)
+		apiGet.GET("/delete-from-cart", middlewares.UserAuthMiddleware, handlers.DeleteItemFromCartHandler)
+	}
 
 	return r
 }
