@@ -26,7 +26,12 @@ func InitDB() {
 
 	godotenv.Load(wd + "/.env")
 
-	connStr := "user=" + os.Getenv("USER") + " password=" + os.Getenv("PASSWORD") + " dbname=" + os.Getenv("DB_NAME") + " sslmode=disable"
+	connStr := "host=" + os.Getenv("HOST") +
+		" user=" + os.Getenv("USER") +
+		" password=" + os.Getenv("PASSWORD") +
+		" dbname=" + os.Getenv("DB_NAME") +
+		" port=" + os.Getenv("PORT") +
+		" sslmode=disable"
 
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
