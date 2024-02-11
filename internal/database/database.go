@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-var DB *gorm.DB
+var DB gorm.DB
 var Email string
 var EmailPassword string
 
@@ -35,7 +35,7 @@ func InitDB() {
 		log.Fatal(err)
 	}
 
-	DB = db
+	DB = *db
 
 	Email = os.Getenv("EMAIL")
 	EmailPassword = os.Getenv("EMAIL_PASSWORD")

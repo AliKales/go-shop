@@ -1,8 +1,10 @@
 package models
 
 import (
+	tokengenerator "example/web-service-gin/internal/token_generator"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/pgtype"
 )
 
@@ -21,4 +23,38 @@ type User struct {
 	UserActionExpireAt   time.Time `gorm:"not null"`
 	StoreId              *int
 	Cart                 *pgtype.JSONB
+}
+
+func (u *User) ResetAllTokens() {
+	u.ResetToken()
+	u.RefreshToken = tokengenerator.GenerateUserRefreshToken()
+	u.RefreshTokenExpireAt = time.Now().Add(24 * time.Hour).UTC()
+}
+
+func (u *User) ResetToken() {
+	u.Token = tokengenerator.GenerateUserToken()
+	u.TokenExpireAt = time.Now().Add(30 * time.Minute).UTC()
+}
+
+func (u *User) TokenData() gin.H {
+	return gin.H{
+		"token":                u.Token,
+		"tokenExpireAt":        u.TokenExpireAt,
+		"refreshToken":         u.RefreshToken,
+		"refreshTokenExpireAt": u.RefreshTokenExpireAt,
+	}
+}
+
+func (u *User) PublicData() gin.H {
+	return gin.H{
+		"username":  u.Username,
+		"createdAt": u.CreatedAt,
+	}
+}
+
+func (u *User) CartItemCount() int {
+	var data map[string]int
+	u.Cart.AssignTo(&data)
+
+	return len(data)
 }

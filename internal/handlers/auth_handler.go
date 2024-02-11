@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"example/web-service-gin/internal/controllers"
 	"example/web-service-gin/internal/database"
 	"example/web-service-gin/internal/models"
+	tokengenerator "example/web-service-gin/internal/token_generator"
 	"example/web-service-gin/internal/utils"
 	"fmt"
 	"math"
@@ -36,9 +36,9 @@ func SignupHandler(c *gin.Context) {
 
 	hash_pass := utils.HashPassword(req.Password)
 
-	action := utils.GenerateSecureToken(20) + "|verify-email"
+	action := tokengenerator.GenerateSecureToken(20) + "|verify-email"
 
-	user := models.User{Username: req.Username, Email: req.Email, Password: hash_pass, Token: utils.GenerateSecureToken(16), RefreshToken: utils.GenerateSecureToken(32), TokenExpireAt: time.Now().Add(10 * time.Minute).UTC(), RefreshTokenExpireAt: time.Now().Add(30 * time.Minute).UTC(), CreatedAt: time.Now(), IsEmailVerified: false, UserAction: action, UserActionExpireAt: time.Now().Add(100 * time.Hour).UTC()}
+	user := models.User{Username: req.Username, Email: req.Email, Password: hash_pass, Token: tokengenerator.GenerateUserToken(), RefreshToken: tokengenerator.GenerateUserRefreshToken(), TokenExpireAt: time.Now().Add(30 * time.Minute).UTC(), RefreshTokenExpireAt: time.Now().Add(24 * time.Hour).UTC(), CreatedAt: time.Now(), IsEmailVerified: false, UserAction: action, UserActionExpireAt: time.Now().Add(100 * time.Hour).UTC()}
 
 	if err := database.DB.Create(&user).Error; err != nil {
 		if utils.IsNotUniqueColumn(err, "users_email_key") {
@@ -71,7 +71,7 @@ func LoginHandler(c *gin.Context) {
 
 	if !user.IsEmailVerified {
 		if utils.IsExpired(user.UserActionExpireAt) {
-			newAction := utils.GenerateSecureToken(20) + "|verify-email"
+			newAction := tokengenerator.GenerateSecureToken(20) + "|verify-email"
 			user.UserAction = newAction
 			user.UserActionExpireAt = time.Now().Add(100 * time.Minute).UTC()
 			database.DB.Save(&user)
@@ -83,14 +83,14 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	if utils.IsExpired(user.RefreshTokenExpireAt) {
-		user = controllers.ResetAllTokens(*user)
-		database.DB.Save(user)
+		user.ResetAllTokens()
+		database.DB.Save(&user)
 	} else if utils.IsExpired(user.TokenExpireAt) {
-		user = controllers.ResetToken(*user)
-		database.DB.Save(user)
+		user.ResetToken()
+		database.DB.Save(&user)
 	}
 
-	c.JSON(http.StatusOK, controllers.UserTokenData(*user))
+	c.JSON(http.StatusOK, user.TokenData())
 }
 
 func RefreshTokenHandler(c *gin.Context) {
@@ -128,15 +128,15 @@ func RefreshTokenHandler(c *gin.Context) {
 	}
 
 	if !utils.IsExpired(user.TokenExpireAt) {
-		c.JSON(http.StatusOK, controllers.UserTokenData(*user))
+		c.JSON(http.StatusOK, user.TokenData())
 		return
 	}
 
-	user = controllers.ResetToken(*user)
+	user.ResetToken()
 
-	database.DB.Save(user)
+	database.DB.Save(&user)
 
-	c.JSON(http.StatusOK, controllers.UserTokenData(*user))
+	c.JSON(http.StatusOK, user.TokenData())
 }
 
 func VerifyEmailHandler(c *gin.Context, user models.User) {
@@ -166,7 +166,7 @@ func ForgetPasswordHandler(c *gin.Context) {
 		return
 	}
 
-	newAction := utils.GenerateSecureToken(20) + "|change-password"
+	newAction := tokengenerator.GenerateSecureToken(20) + "|change-password"
 	user.UserAction = newAction
 	user.UserActionExpireAt = time.Now().Add(20 * time.Minute).UTC()
 	database.DB.Save(&user)
@@ -178,7 +178,7 @@ func ForgetPasswordHandler(c *gin.Context) {
 
 func ChangePasswordHandler(c *gin.Context) {
 	var req ChangePassReq
-	c.BindJSON(req)
+	c.BindJSON(&req)
 
 	user := database.GetUserBy("user_action", &req.Token)
 
@@ -200,7 +200,7 @@ func ChangePasswordHandler(c *gin.Context) {
 
 	user.Password = utils.HashPassword(req.Token)
 	user.UserAction = ""
-	user = controllers.ResetAllTokens(*user)
+	user.ResetAllTokens()
 
 	database.DB.Save(user)
 
@@ -227,7 +227,7 @@ func RequestDeleteAccountHandler(c *gin.Context) {
 		return
 	}
 
-	newAction := utils.GenerateSecureToken(20) + "|delete-account"
+	newAction := tokengenerator.GenerateSecureToken(20) + "|delete-account"
 	user.UserAction = newAction
 	user.UserActionExpireAt = time.Now().Add(10 * time.Minute).UTC()
 	database.DB.Save(&user)

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"example/web-service-gin/internal/controllers"
 	"example/web-service-gin/internal/database"
 	"example/web-service-gin/internal/middlewares"
 	"example/web-service-gin/internal/utils"
@@ -54,11 +53,11 @@ func GetUserPublicHandler(c *gin.Context) {
 	store := database.GetStoreBy("user_id", int(user.Id))
 
 	if store != nil {
-		c.JSON(http.StatusOK, gin.H{"message": "User found!", "user": controllers.UserPublicData(user), "store": controllers.StorePublicData(store)})
+		c.JSON(http.StatusOK, gin.H{"message": "User found!", "user": user.PublicData(), "store": store.PublicData()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User found!", "user": controllers.UserPublicData(user)})
+	c.JSON(http.StatusOK, gin.H{"message": "User found!", "user": user.PublicData()})
 }
 
 func AddItemToCartHandler(c *gin.Context) {

@@ -1,4 +1,4 @@
-package utils
+package tokengenerator
 
 import (
 	"crypto/rand"
@@ -11,4 +11,12 @@ func GenerateSecureToken(length int) string {
 		return ""
 	}
 	return hex.EncodeToString(b)
+}
+
+func GenerateUserToken() string {
+	return GenerateSecureToken(50)
+}
+
+func GenerateUserRefreshToken() string {
+	return GenerateSecureToken(100)
 }
