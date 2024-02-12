@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/pgtype"
 )
 
 type SignupReq struct {
@@ -25,9 +26,9 @@ type LoginReq struct {
 	Username string
 }
 
-type ChangePassReq struct{
+type ChangePassReq struct {
 	Password string
-	Token string
+	Token    string
 }
 
 func SignupHandler(c *gin.Context) {
@@ -38,7 +39,7 @@ func SignupHandler(c *gin.Context) {
 
 	action := tokengenerator.GenerateSecureToken(20) + "|verify-email"
 
-	user := models.User{Username: req.Username, Email: req.Email, Password: hash_pass, Token: tokengenerator.GenerateUserToken(), RefreshToken: tokengenerator.GenerateUserRefreshToken(), TokenExpireAt: time.Now().Add(30 * time.Minute).UTC(), RefreshTokenExpireAt: time.Now().Add(24 * time.Hour).UTC(), CreatedAt: time.Now(), IsEmailVerified: false, UserAction: action, UserActionExpireAt: time.Now().Add(100 * time.Hour).UTC()}
+	user := models.User{Username: req.Username, Email: req.Email, Password: hash_pass, Token: tokengenerator.GenerateUserToken(), RefreshToken: tokengenerator.GenerateUserRefreshToken(), TokenExpireAt: time.Now().Add(30 * time.Minute).UTC(), RefreshTokenExpireAt: time.Now().Add(24 * time.Hour).UTC(), CreatedAt: time.Now(), IsEmailVerified: false, UserAction: action, UserActionExpireAt: time.Now().Add(100 * time.Hour).UTC(), Cart: &pgtype.JSONB{Bytes: []byte("{}"), Status: pgtype.Present}}
 
 	if err := database.DB.Create(&user).Error; err != nil {
 		if utils.IsNotUniqueColumn(err, "users_email_key") {

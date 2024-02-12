@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -15,16 +16,7 @@ var Email string
 var EmailPassword string
 
 func InitDB() {
-	///For local .env use below commented codes!!!!!!!!!
-
-	// wd, errGetwd := os.Getwd()
-	// if errGetwd != nil {
-	// 	log.Fatal(errGetwd)
-	// }
-
-	// wd = strings.Replace(wd, "\\cmd", "", 1)
-
-	// godotenv.Load(wd + "/.env")
+	godotenv.Load(".env")
 
 	connStr := os.Getenv("DB_URL")
 
