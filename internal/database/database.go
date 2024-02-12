@@ -14,11 +14,13 @@ import (
 var DB gorm.DB
 var Email string
 var EmailPassword string
+var Port string
 
 func InitDB() {
 	godotenv.Load(".env")
 
 	connStr := os.Getenv("DB_URL")
+	Port = os.Getenv("PORT")
 
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),

@@ -5,14 +5,14 @@ import (
 	"example/web-service-gin/internal/routes"
 )
 
-func init()  {
+func init() {
 	database.InitDB()
 }
 
 func main() {
 	r := routes.SetupRouter()
 
-	if err := r.Run(":8080"); err != nil {
+	if err := r.Run(":" + database.Port); err != nil {
 		panic("failed to start the server")
 	}
 }
