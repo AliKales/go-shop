@@ -13,8 +13,8 @@ func SetupRouter() *gin.Engine {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"https://shopi-rp46.onrender.com"}
-	config.AllowMethods = []string{"GET", "POST"}
-	config.AllowHeaders = []string{"Content-Type", "Authorization"}
+	config.AllowMethods = []string{"POST, OPTIONS, GET, PUT"}
+	config.AllowHeaders = []string{"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With"}
 
 	r.Use(cors.New(config))
 
