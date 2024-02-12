@@ -4,9 +4,7 @@ import (
 	"example/web-service-gin/internal/models"
 	"log"
 	"os"
-	"strings"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -17,14 +15,16 @@ var Email string
 var EmailPassword string
 
 func InitDB() {
-	wd, errGetwd := os.Getwd()
-	if errGetwd != nil {
-		log.Fatal(errGetwd)
-	}
+	///For local .env use below commented codes!!!!!!!!!
 
-	wd = strings.Replace(wd, "\\cmd", "", 1)
+	// wd, errGetwd := os.Getwd()
+	// if errGetwd != nil {
+	// 	log.Fatal(errGetwd)
+	// }
 
-	godotenv.Load(wd + "/.env")
+	// wd = strings.Replace(wd, "\\cmd", "", 1)
+
+	// godotenv.Load(wd + "/.env")
 
 	connStr := "host=" + os.Getenv("HOST") +
 		" user=" + os.Getenv("USER") +
