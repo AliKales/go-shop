@@ -75,7 +75,7 @@ func GetStorePublicHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Store found!", "store": store.PublicData(), "items": items, "cartItemLength": user.CartItemCount()})
+	c.JSON(http.StatusOK, gin.H{"message": "Store found!", "store": store.PublicData(), "items": items})
 }
 
 func CreateStoreItemHandler(c *gin.Context) {

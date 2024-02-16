@@ -60,6 +60,12 @@ func GetUserPublicHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User found!", "user": user.PublicData()})
 }
 
+func GetUserPrivateHandler(c *gin.Context) {
+	user := middlewares.ConvertToUser(c)
+
+	c.JSON(http.StatusOK, gin.H{"message": "User found!", "user": user.PrivateData()})
+}
+
 func AddItemToCartHandler(c *gin.Context) {
 	user := middlewares.ConvertToUser(c)
 

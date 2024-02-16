@@ -53,13 +53,13 @@ func UserAuthMiddleware(c *gin.Context) {
 	user := database.GetUserBy("token", &token)
 
 	if user == nil {
-		c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "User not found"})
 		c.Abort()
 		return
 	}
 
 	if utils.IsExpired(user.TokenExpireAt) {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Token expired!"})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Token expired!"})
 		c.Abort()
 		return
 	}

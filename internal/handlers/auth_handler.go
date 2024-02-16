@@ -54,7 +54,7 @@ func SignupHandler(c *gin.Context) {
 		return
 	}
 
-	utils.SendEmail(user.Email, "Verify email", "To verify your email please click this; https://storei-rp46.onrender.com/auth/verify-email?token="+action)
+	utils.SendEmail(user.Email, "Verify email", "To verify your email please click this; https://shopi-rp46.onrender.com/auth/verify-email.html?token="+action)
 
 	c.JSON(http.StatusForbidden, gin.H{"message": "You are signed up! Now verify your email"})
 }
@@ -77,7 +77,7 @@ func LoginHandler(c *gin.Context) {
 			user.UserActionExpireAt = time.Now().Add(100 * time.Minute).UTC()
 			database.DB.Save(&user)
 
-			utils.SendEmail(user.Email, "Verify email", "To verify your email please click this; https://storei-rp46.onrender.com/auth/verify-email?token="+newAction)
+			utils.SendEmail(user.Email, "Verify email", "To verify your email please click this; https://shopi-rp46.onrender.com/auth/verify-email.html?token="+newAction)
 		}
 		c.JSON(http.StatusForbidden, gin.H{"message": "Verify your email"})
 		return
@@ -172,7 +172,7 @@ func ForgetPasswordHandler(c *gin.Context) {
 	user.UserActionExpireAt = time.Now().Add(20 * time.Minute).UTC()
 	database.DB.Save(&user)
 
-	utils.SendEmail(user.Email, "Reset password", "To reset your password please click this; https://storei-rp46.onrender.com/auth/reset-password?token="+newAction)
+	utils.SendEmail(user.Email, "Reset password", "To reset your password please click this; https://shopi-rp46.onrender.com/auth/reset-password.html?token="+newAction)
 
 	c.JSON(http.StatusOK, gin.H{"message": "We sent you an email to reset your password!"})
 }
@@ -233,7 +233,7 @@ func RequestDeleteAccountHandler(c *gin.Context) {
 	user.UserActionExpireAt = time.Now().Add(10 * time.Minute).UTC()
 	database.DB.Save(&user)
 
-	utils.SendEmail(user.Email, "Delete Account", "To delete your account please click this; https://storei-rp46.onrender.com/auth/delete-account?token="+newAction)
+	utils.SendEmail(user.Email, "Delete Account", "To delete your account please click this; https://shopi-rp46.onrender.com/auth/delete-account.html?token="+newAction)
 
 	c.JSON(http.StatusOK, gin.H{"message": "We sent you an email to delete your account!"})
 }

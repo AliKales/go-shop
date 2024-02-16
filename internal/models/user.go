@@ -52,6 +52,18 @@ func (u *User) PublicData() gin.H {
 	}
 }
 
+func (u *User) PrivateData() gin.H {
+	return gin.H{
+		"username":        u.Username,
+		"createdAt":       u.CreatedAt,
+		"id":              u.Id,
+		"email":           u.Email,
+		"isEmailVerified": u.IsEmailVerified,
+		"storeId":         u.StoreId,
+		"cartItemCount": u.CartItemCount(),
+	}
+}
+
 func (u *User) CartItemCount() int {
 	var data map[string]int
 	u.Cart.AssignTo(&data)
