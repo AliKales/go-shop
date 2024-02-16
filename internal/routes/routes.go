@@ -36,7 +36,7 @@ func SetupRouter() *gin.Engine {
 		apiGet.GET("/user-action", handlers.RedirectUserAction)
 		apiGet.GET("/forget-password", handlers.ForgetPasswordHandler)
 		apiGet.GET("/user/:username", handlers.GetUserPublicHandler)
-		apiGet.GET("/user", handlers.GetUserPrivateHandler)
+		apiGet.GET("/user", middlewares.UserAuthMiddleware, handlers.GetUserPrivateHandler)
 		apiGet.GET("/store/:storeLinkName", handlers.GetStorePublicHandler)
 		apiGet.GET("/cart", middlewares.UserAuthMiddleware, handlers.GetCartHandler)
 		apiGet.GET("/add-to-cart", middlewares.UserAuthMiddleware, handlers.AddItemToCartHandler)
