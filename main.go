@@ -3,11 +3,9 @@ package main
 import (
 	"example/web-service-gin/internal/database"
 	"example/web-service-gin/internal/routes"
-	"example/web-service-gin/internal/utils"
 )
 
 func init() {
-	utils.InitGeo()
 	database.InitDB()
 }
 
