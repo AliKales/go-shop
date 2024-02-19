@@ -7,7 +7,7 @@ import (
 )
 
 type Store struct {
-	ID            uint
+	Id            uint
 	UserId        int
 	CreatedAt     time.Time
 	Name          string
@@ -22,6 +22,7 @@ func (s *Store) PublicData() gin.H {
 		"linkName":  s.LinkName,
 		"createdAt": s.CreatedAt,
 		"itemCount": s.ItemCount,
+		"itemSellCount": s.ItemSellCount,
 		"userId":    s.UserId,
 	}
 }

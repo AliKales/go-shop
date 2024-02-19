@@ -6,6 +6,7 @@ import (
 	"example/web-service-gin/internal/models"
 	"example/web-service-gin/internal/utils"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -47,25 +48,31 @@ func CreateStoreHandler(c *gin.Context) {
 		return
 	}
 
-	storeId := int(store.ID)
+	storeId := int(store.Id)
 	user.StoreId = &storeId
 	database.DB.Save(&user)
 
 	c.JSON(http.StatusOK, gin.H{"message": "store created!"})
-	return
 }
 
 func GetStorePublicHandler(c *gin.Context) {
 	storeLinkName := c.Param("storeLinkName")
 
-	store := database.GetStoreBy("link_name", storeLinkName)
+	var store *models.Store
+
+	if utils.IsStringInt(storeLinkName) {
+		id, _ := strconv.Atoi(storeLinkName)
+		store = database.GetStoreBy("id", uint(id))
+	} else {
+		store = database.GetStoreBy("link_name", storeLinkName)
+	}
 
 	if store == nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Store not found!"})
 		return
 	}
 
-	items := database.GetStoreItems(int(store.ID))
+	items := database.GetStoreItems(int(store.Id))
 
 	token := middlewares.GetTokenFromHeader(c)
 	user := database.GetUserBy("token", token)
@@ -105,4 +112,8 @@ func CreateStoreItemHandler(c *gin.Context) {
 	database.DB.Exec(sqlStatement, uint(*user.StoreId))
 
 	c.JSON(http.StatusOK, gin.H{"message": "Item created!"})
+}
+
+func GetNewestStoresHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "Stores listed!", "stores": database.GetStoresDescByCreatedAt()})
 }

@@ -93,7 +93,7 @@ func AddItemToCartHandler(c *gin.Context) {
 	)
 	WHERE id = ?;
 	`
-	itemIdString := strconv.FormatUint(uint64(item.ID), 10)
+	itemIdString := strconv.FormatUint(uint64(item.Id), 10)
 
 	database.DB.Exec(sqlStatement, "{"+itemIdString+"}", itemIdString, itemIdString, user.Id)
 

@@ -63,6 +63,8 @@ func LoginHandler(c *gin.Context) {
 	var req LoginReq
 	c.BindJSON(&req)
 
+	utils.GetLocationByIp("176.41.181.254")
+
 	user := database.GetUserBy("username", &req.Username)
 
 	if user == nil || !utils.CheckPasswordHash(req.Password, user.Password) {
@@ -250,7 +252,7 @@ func DeleteAccountHandler(c *gin.Context, user models.User) {
 
 	database.DB.Delete(store)
 
-	database.DB.Where("store_id = ?", store.ID).Delete(&models.Store{})
+	database.DB.Where("store_id = ?", store.Id).Delete(&models.Store{})
 
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted!"})
 }

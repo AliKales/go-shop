@@ -41,6 +41,7 @@ func SetupRouter() *gin.Engine {
 		apiGet.GET("/cart", middlewares.UserAuthMiddleware, handlers.GetCartHandler)
 		apiGet.GET("/add-to-cart", middlewares.UserAuthMiddleware, handlers.AddItemToCartHandler)
 		apiGet.GET("/delete-from-cart", middlewares.UserAuthMiddleware, handlers.DeleteItemFromCartHandler)
+		apiGet.GET("/newest-stores", handlers.GetNewestStoresHandler)
 	}
 
 	return r

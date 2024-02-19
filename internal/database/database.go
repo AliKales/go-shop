@@ -55,6 +55,13 @@ func GetStoreBy(column string, val interface{}) *models.Store {
 	return &store
 }
 
+func GetStoresDescByCreatedAt() []models.Store {
+	var stores []models.Store
+	DB.Order("created_at desc").Limit(15).Find(&stores)
+
+	return stores
+}
+
 func GetStoreItems(storeId int) []models.StoreItem {
 	var storeItems []models.StoreItem
 	DB.Where("store_id = ?", storeId).Find(&storeItems)

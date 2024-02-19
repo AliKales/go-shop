@@ -3,7 +3,7 @@ package models
 import "time"
 
 type StoreItem struct {
-	ID            uint      `json:"id"`
+	Id            uint      `json:"id"`
 	StoreId       int       `json:"storeId"`
 	CreatedAt     time.Time `json:"createdAt"`
 	Name          string    `json:"name"`
