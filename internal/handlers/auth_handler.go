@@ -63,8 +63,6 @@ func LoginHandler(c *gin.Context) {
 	var req LoginReq
 	c.BindJSON(&req)
 
-	utils.GetLocationByIp("176.41.181.254")
-
 	user := database.GetUserBy("username", &req.Username)
 
 	if user == nil || !utils.CheckPasswordHash(req.Password, user.Password) {
